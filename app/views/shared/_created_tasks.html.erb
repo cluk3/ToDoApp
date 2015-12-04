@@ -1,0 +1,6 @@
+<% if @created_tasks.any? %>
+  <ol class="tasks">
+    <%= render @created_tasks %>
+  </ol>
+  <%= will_paginate @created_tasks %>
+<% end %>

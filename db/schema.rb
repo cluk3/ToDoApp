@@ -11,17 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151129230605) do
+ActiveRecord::Schema.define(version: 20151130213852) do
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "owner_id"
     t.string   "value"
-    t.boolean  "completed"
+    t.boolean  "completed",   default: false
     t.string   "category"
     t.date     "overdue"
     t.integer  "assignee_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "tasks", ["assignee_id"], name: "index_tasks_on_assignee_id"

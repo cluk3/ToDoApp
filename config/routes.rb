@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
 
   root 'static_pages#home'
-
+  get    'report' => 'static_pages#report'
   get    'signup'  => 'users#new'
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
   delete 'logout'  => 'sessions#destroy'
 
-  resources :tasks
+  resources :tasks, only: [:create, :destroy, :update]
   resources :users
   resources :account_activations, only: [:edit]
   resources :password_resets,     only: [:new, :create, :edit, :update]

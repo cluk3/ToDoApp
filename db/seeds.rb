@@ -23,7 +23,7 @@ User.create!(name:  "Franpaolo Lolli",
 
 99.times do |n|
   name  = Faker::Name.name
-  email = "example-#{n+1}@railstutorial.org"
+  email = Faker::Internet.email
   password = "password"
   User.create!(name:  name,
                email: email,
@@ -32,3 +32,27 @@ User.create!(name:  "Franpaolo Lolli",
                activated: true,
                activated_at: Time.zone.now)
 end
+
+  400.times do |m|
+
+    Task.create!(owner_id:  Faker::Number.between(1, 99),
+                 value: Faker::Lorem.sentence,
+                 assignee_id: Faker::Number.between(1, 99),
+                 completed: (m%2)
+                 )
+  end
+
+  40.times do |m|
+
+    Task.create!(owner_id: 2,
+                 value: Faker::Lorem.sentence,
+                 assignee_id: Faker::Number.between(1, 99),
+                 completed: (m%2)
+                 )
+    Task.create!(owner_id:  Faker::Number.between(1, 99),
+                 value: Faker::Lorem.sentence,
+                 assignee_id: 2,
+                 completed: (m%2)
+                 )
+  end
+

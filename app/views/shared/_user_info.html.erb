@@ -1,0 +1,9 @@
+<h1><%= link_to user_info.name, user_info %></h1>
+<span>
+  <%= pluralize(user_info.created_tasks.count, "Created Task") %>
+  <%= " (#{user_info.created_tasks.where(completed: true).count} completed)" %>
+</span>
+<span>
+  <%= pluralize(user_info.assigned_tasks.count, "Assigned Task") %>
+  <%= " (#{user_info.assigned_tasks.where(completed: true).count} completed)" %>
+</span>

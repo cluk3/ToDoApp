@@ -1,0 +1,15 @@
+<% provide(:title, "Report") %>
+<div class="row">
+  <aside class="col-md-4">
+    <section class="user_info">
+      <%= render 'shared/user_info', user_info: current_user %>
+    </section>
+  </aside>
+  <div class="col-md-8">
+    <h3> Report </h3>
+    <p>
+      <%= pluralize @completed_tasks_num, "completed task" %>
+      over <%= @tasks_num %>
+    </p>
+  </div>
+</div>

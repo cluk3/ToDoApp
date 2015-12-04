@@ -1,0 +1,14 @@
+<%= form_for(@task) do |f| %>
+  <%= render 'shared/error_messages', object: @task %>
+  <div class="field">
+    <%= f.label :value %><br>
+    <%= f.text_field :value, placeholder: "Write new task here" %><br>
+
+    <div class="form-group">
+      <%= f.label :completed %>
+      <%= f.check_box :completed %>
+    </div>
+  </div>
+
+  <%= f.submit "Add Task!", class: "btn btn-primary" %>
+<% end %>

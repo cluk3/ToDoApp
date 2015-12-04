@@ -1,64 +1,49 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :set_task, only: [:update]
+  before_action :logged_in_user, only: [:create, :destroy, :update]
+  before_action :correct_user, only: :destroy
+  before_action :correct_user_update, only: :update
 
-  # GET /tasks
-  # GET /tasks.json
-  def index
-    @tasks = Task.all
-  end
-
-  # GET /tasks/1
-  # GET /tasks/1.json
-  def show
-  end
-
-  # GET /tasks/new
-  def new
-    @task = Task.new
-  end
-
-  # GET /tasks/1/edit
-  def edit
-  end
 
   # POST /tasks
-  # POST /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = current_user.created_tasks.build(task_params_create)
+    @created_tasks = current_user.created_tasks.paginate(page: params[:page])
 
-    respond_to do |format|
-      if @task.save
-        format.html { redirect_to @task, notice: 'Task was successfully created.' }
-        format.json { render :show, status: :created, location: @task }
-      else
-        format.html { render :new }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
+    category = /#\w*/.match(@task.value)
+    @task.category = category[0][1..-1] unless category.nil?
+
+    if assignee = /@\w* \w*/.match(@task.value)
+      assignee = User.find_by name: assignee[0][1..-1]
+      @task.assignee_id = assignee.id
+    end
+
+    # Overdue implementation to be done
+
+    if @task.save
+      flash[:success] = 'Task was successfully created.'
+      redirect_to root_url
+    else
+      render 'static_pages/home'
     end
   end
 
-  # PATCH/PUT /tasks/1
-  # PATCH/PUT /tasks/1.json
+  #UPDATE /tasks/1
   def update
-    respond_to do |format|
-      if @task.update(task_params)
-        format.html { redirect_to @task, notice: 'Task was successfully updated.' }
-        format.json { render :show, status: :ok, location: @task }
-      else
-        format.html { render :edit }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
+    if @task.update(completed: !@task.completed)
+      flash[:success] = 'Task was successfully updated.'
+      redirect_to request.referrer || root_url
+    else
+      render request.referrer || root_url
     end
   end
+
 
   # DELETE /tasks/1
-  # DELETE /tasks/1.json
   def destroy
     @task.destroy
-    respond_to do |format|
-      format.html { redirect_to tasks_url, notice: 'Task was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    flash[:success] = 'Task was successfully deleted.'
+    redirect_to request.referrer || root_url
   end
 
   private
@@ -68,7 +53,26 @@ class TasksController < ApplicationController
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def task_params
-      params.require(:task).permit(:owner_id, :value, :completed, :category, :overdue, :assignee_id)
+    def task_params_create
+      params.require(:task).permit(:value, :completed)
+    end
+
+    def task_params_update
+      params.require(:task).permit(:completed)
+    end
+
+    def correct_user
+      @task = current_user.created_tasks.find_by(id: params[:id])
+      if @task.nil?
+        flash[:warning] = 'You are not allowed to permorm this action.'
+        redirect_to request.referrer || root_url
+      end
+    end
+
+    def correct_user_update
+      if (@task.owner_id != current_user.id) && (@task.assignee_id != current_user.id)
+        flash[:warning] = 'You are not allowed to permorm this action.'
+        redirect_to request.referrer || root_url
+      end
     end
 end

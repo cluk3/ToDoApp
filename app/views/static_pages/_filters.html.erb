@@ -1,0 +1,11 @@
+<strong>Filters:</strong>
+<% if params[:completed] == "true"%>
+  <%= link_to "Show only completed", root_path, class: "btn btn-primary active", role: "button" %>
+  <%= link_to "Show only not completed", root_path(completed: false), class: "btn btn-danger", role: "button"%>
+<%elsif params[:completed] == "false" %>
+  <%= link_to "Show only completed", root_path(completed: true), class: "btn btn-primary", role: "button" %>
+  <%= link_to "Show only not completed", root_path, class: "btn btn-danger active", role: "button"%>
+<% else %>
+  <%= link_to "Show only completed", root_path(completed: true), class: "btn btn-primary", role: "button" %>
+  <%= link_to "Show only not completed", root_path(completed: false), class: "btn btn-danger", role: "button"%>
+<% end %>

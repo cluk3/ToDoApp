@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
   attr_accessor :remember_token, :activation_token, :reset_token
   before_create :create_activation_digest
-  has_many :created_tasks, :class_name => "Task", :foreign_key => "owner_id"
-  has_many :assigned_tasks, :class_name => "Task", :foreign_key => "assignee_id"
+  has_many :created_tasks, :class_name => "Task", :foreign_key => "owner_id", dependent: :destroy
+  has_many :assigned_tasks, :class_name => "Task", :foreign_key => "assignee_id", dependent: :destroy
 
   validates :name, presence: true, length: {maximum: 50}
 
